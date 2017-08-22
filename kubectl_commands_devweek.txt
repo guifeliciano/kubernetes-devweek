@@ -1,0 +1,236 @@
+0) 
+kubectl describe node
+
+1) Run simple nginx app
+#kubectl run creates a deployment by default
+kubectl run nginx --image=nginx --port=80
+
+kubectl get pods
+
+kubectl get deployments
+
+kubectl describe pod <name> | grep IP:
+
+kubectl expose deployment nginx --port=80 --name=nginx-http --type=NodePort
+
+minikube service list or kubectl get services
+
+access service url
+
+kubectl logs
+
+kubectl get pods
+
+kubectl delete pods <pod-name>
+
+kubectl delete deployments nginx
+
+kubectl get services
+
+kubectl delete service <service-name>
+
+(optional)kubectl delete deployments,services nginx
+
+
+2) Using kubectl create Pod
+
+kubectl create -f ./yaml/pod.yaml
+
+kubectl get pods
+
+kubectl expose pod nginx-pod --port=80 --name=nginx-http --type=NodePort
+
+kubectl get services
+
+minikube service list
+
+kubectl delete pod nginx-pod
+
+kubectl delete service nginx-http
+
+
+3) Using kubectl create RC
+
+kubectl create -f ./yaml/rc.yaml
+
+kubectl get rc
+
+kubectl describe rc
+
+kubectl get pods --show-labels
+
+kubectl describe pod <name>
+
+kubectl expose rc nginx --port=80 --type=NodePort
+
+kubectl scale --replicas=2 rc/nginx
+
+kubectl delete rc,service nginx
+
+
+4) Using kubectl create RS
+
+
+kubectl create -f ./yaml/rs.yaml
+
+kubectl get pods --show-labels
+
+kubectl label pods <name> environment=prod --overwrite
+
+# A new pod will be created
+kubectl get pods -l 'environment in (dev)'
+
+# The changed pod will be deleted
+kubectl stop pod <name>
+
+A new pod will be created
+kubectl stop pod <name>
+
+kubectl exec <pod-name> -it bash
+
+kubectl delete rs nginx-rs
+
+
+5) Using kubectl create deploy
+
+kubectl create -f ./yaml/d09.yaml
+
+kubectl get deploy
+
+
+kubectl get rs
+
+
+kubectl get pods
+
+kubectl describe deploy
+
+kubectl exec <pod-name> -it bash
+
+ip addr
+
+curl <ip>:9876/info
+
+exit
+
+kubectl apply -f ./yaml/d10.yaml
+
+kubectl rollout status deploy/simple-deploy
+
+kubectl get pods
+
+kubectl get rs
+
+ip addr
+
+curl <ip>:9876/info
+
+exit
+
+kubectl rollout history deploy/simple-deploy
+
+kubectl rollout undo deploy/simple-deploy --to-revision=1
+
+kubectl rollout history deploy/simple-deploy
+
+kubectl get rs
+
+kubectl get pods
+
+ip addr
+
+curl <ip>:9876/info
+
+exit
+
+kubectl delete deploy simple-deploy
+
+6) Using kubectl create service
+
+
+kubectl create -f ./yaml/d09.yaml
+
+kubectl create -f ./yaml/d09-svc.yaml
+
+kubectl get pods -l app=simple
+
+kubectl describe pod <name>
+
+
+http://<service>:port/info #Look proxy ip
+
+kubectl describe svc simple-service
+
+minikube ssh
+
+sudo iptables-save | grep simple # Look DNAT rules to containers and load balancer
+
+kubectl delete deploy simple-deploy
+
+kubectl delete deploy simple-service
+
+7) Using kubectl create job
+
+kubectl create -f ./yaml/job.yaml
+
+kubectl get jobs
+
+kubectl describe jobs
+
+kubectl get pods --show-all
+
+kubectl logs countdown-<id> # need to wait 6m after kubectl create
+
+kubectl delete job countdown
+
+
+8) Using kubectl create cron-job
+
+kubectl create -f ./yaml/cron-job.yaml
+
+kubectl get cronjobs
+
+kubectl describe cronjobs
+
+kubectl get pods --show-all
+
+kubectl get cronjobs --watch
+
+kubectl delete cronjob hello
+
+
+9) Using kubectl create volumes
+
+kubectl create -f ./yaml/volume.yaml
+
+kubectl describe pod sharevol
+
+kubectl exec sharevol -c c1 -i -t -- bash
+
+#mount | grep xchange
+
+#echo "bla" > /tmp/xchange/devweek
+
+exit
+
+kubectl exec sharevol -c c2 -i -t -- bash
+
+#mount | grep /tmp/data
+
+#cat /tmp/data/devweek
+
+
+kubectl delete po sharevol
+
+10) Stateful set
+
+kubectl create -f ./yaml/statefulset.yaml
+
+kubectl get statefulset
+
+kubectl get po
+
+https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
+
+kubectl delete statefulset --all
+
