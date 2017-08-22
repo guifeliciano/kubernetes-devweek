@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: ReplicaSet
+metadata:
+  name: nginx-rs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-rs-pod
+    matchExpressions:
+      - {key: tier, operator: In, values: ["backend"]}
+      - {key: environment, operator: NotIn, values: ["prod"]}
+  template:
+    metadata:
+      labels:
+        app: nginx-rs-pod
+        tier: backend
+        environment: dev
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        stdin: true
+        tty: true
+        ports:
+        - containerPort: 80
